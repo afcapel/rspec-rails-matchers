@@ -1,27 +1,36 @@
 module RSpecRailsMatchers
   module Validations
-    module ConfirmationOf
-      def validate_confirmation_of(attribute)
-        RSpec::Matchers::Matcher.new :validate_confirmation_of, attribute do |_attr_|
-          match do |model|
-            if model.respond_to?("#{_attr_}_confirmation=")
-              model.send("#{_attr_}=", 'asdf')
-              model.send("#{_attr_}_confirmation=", 'asdfg')
 
-              model.invalid? && 
-                model.errors[_attr_].include?(
-                  I18n::t('errors.messages.confirmation')
-                )
-            end
-          end
+    class ConfirmationOf
+      def initialize(attribute)
+        @attribute = attribute
+      end
 
-          failure_message_for_should do |model|
-            RSpecRailsMatchers::Message.error(
-              :expected => [ "%s to validate confirmation of %s", model, _attr_ ]
+      def matches?(model)
+        if model.respond_to?("#{@attribute}_confirmation=")
+          model.send("#{@attribute}=", 'asdf')
+          model.send("#{@attribute}_confirmation=", 'asdfg')
+
+          model.invalid? && 
+            model.errors[@attribute].include?(
+              I18n::t('errors.messages.confirmation')
             )
-          end
         end
       end
+
+      def failure_message_for_should
+        "expected #{model.class.name} to validate confirmation of #{@attribute}"
+      end
+
+      def failure_message_for_should_not
+        "expected #{model.class.name} to not validate confirmation of #{@attribute}"
+      end
+
     end
+
+    def validate_confirmation_of(attribute)
+      ConfirmationOf.new attribute
+    end
+
   end
 end
