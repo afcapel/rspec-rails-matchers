@@ -1,20 +1,30 @@
 module RSpecRailsMatchers
   module Validations
-    module PresenceOf
-      def validate_presence_of(attribute)
-        RSpec::Matchers::Matcher.new :validate_presence_of, attribute do |_attr_|
-          match do |model|
-            model.send("#{_attr_}=", nil)
-            model.invalid? && model.errors[_attr_].any?
-          end
 
-          failure_message_for_should do |model|
-            RSpecRailsMatchers::Message.error(
-              :expected => [ "%s to validate presence of %s", model, _attr_ ]
-            )
-          end
-        end
+    class PresenceOf
+
+      def initialize(attribute)
+        @attribute = attribute
       end
+
+      def matches?(model)
+        model.send("#{@attribute}=", nil)
+        model.invalid? && model.errors[@attribute].any?
+      end
+
+      def failure_message_for_should
+        "expected #{model.class.name} to validate prsence of #{@attribute}"
+      end
+
+      def failure_message_for_should_not
+        "expected #{model.class.name} to not validate prsence of #{@attribute}"
+      end
+
+    end
+
+    def validate_presence_of(attribute)
+      PresenceOf.new attribute
     end
   end
 end
+
