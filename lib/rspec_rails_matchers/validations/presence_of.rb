@@ -13,11 +13,11 @@ module RSpecRailsMatchers
       end
 
       def failure_message_for_should
-        "expected #{model.class.name} to validate prsence of #{@attribute}"
+        "expected #{model.class.name} to validate presence of #{@attribute}"
       end
 
       def failure_message_for_should_not
-        "expected #{model.class.name} to not validate prsence of #{@attribute}"
+        "expected #{model.class.name} to not validate presence of #{@attribute}"
       end
 
     end
