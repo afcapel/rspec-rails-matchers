@@ -2,23 +2,16 @@ module RSpecRailsMatchers
   module Behavior
     module Lint
       share_as :AnActiveModel do
-        def be_a_boolean
-          RSpec::Matchers::Matcher.new :be_a_boolean do
-            match do |value|
-              [ true, false ].include?( value )
-            end
-          end
-        end
 
         it { should respond_to(:to_model) }
         it { should respond_to(:to_key) }
         it { should respond_to(:to_param) }
 
         it { should respond_to(:valid?) }
-        its(:valid?) { should be_a_boolean }
+        it("should have boolean valid?") { [true, false].should include subject.valid? }
 
         it { should respond_to(:persisted?) }
-        its(:persisted?) { should be_a_boolean }
+        it("should have boolean persisted?") { [true, false].should include subject.persisted? }
         
         its(:class) { should respond_to(:model_name) }
 
